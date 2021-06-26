@@ -33,7 +33,9 @@ while True:
     boxes_ids = tracker.update(detections)
     for box_id in boxes_ids:
         x, y, w, h, id = box_id
-        cv2.putText(roi, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
+        # cv2.putText(roi, str(id), (x, y - 15), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
+        cv2.putText(roi, str(x), (x - 15, y - 5), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+        cv2.putText(roi, str(y), (x + 60, y - 5), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
         cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 3)
 
     cv2.imshow("roi", roi)
