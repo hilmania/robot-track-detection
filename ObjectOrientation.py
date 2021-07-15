@@ -86,6 +86,12 @@ def getAngle(pointsList):
     print(angD)
     return angD
 
+def calculateDistance (pointsList):
+    pt1, pt2 = pointsList[-2:]
+    # dist = sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    dist = sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
+    print(dist)
+    return dist
 
 img = cv.imread("input_img.jpg")
 
@@ -117,7 +123,7 @@ for i, c in enumerate(contours):
     # Draw each contour only for visualisation purposes
     cv.drawContours(img, contours, i, (0, 0, 255), 2)
 
-    # Calculate orientation between 0 and 180
+    # === Calculate orientation between 0 and 180 ===
     # cv.minAreaRect returns:
     # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
     # rect = cv.minAreaRect(c)
@@ -151,6 +157,7 @@ while True:
 
     if len(pointsList) % 3 == 0 and len(pointsList) != 0:
         getAngle(pointsList)
+        calculateDistance(pointsList)
 
     key = cv.waitKey(1) & 0xFF
     if key == ord("r"):
