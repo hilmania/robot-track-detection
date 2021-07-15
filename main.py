@@ -10,6 +10,28 @@ trackerFlow = cv2.TrackerMedianFlow_create()
 
 cap = cv2.VideoCapture("videos/dataset-1.mp4")
 
+pointsList = []
+
+def mousePoints(event, x, y, flags, params):
+    if event == cv2.EVENT_LBUTTONDOWN:
+        cv2.circle(img, (x, y), 5, (0, 0, 255), cv2.FILLED)
+        pointsList.append([x, y])
+        print(pointsList)
+        #print(x, y)
+
+def gradient(pt1, pt2):
+    return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
+
+def getAngle():
+    print("angle")
+    pt1, pt2, pt3 = pointsList[-3:]
+    print(pt1, pt2, pt3)
+    m1 = gradient(pt1, pt2)
+    m2 = gradient(pt1, pt3)
+    angR = math.atan((m2 - m1) / (1 + (m2 * m1)))
+    angD = round(math.degrees(angR))
+    print(angD)
+
 # Exit if video not opened.
 if not cap.isOpened():
     print("Could not open video")
@@ -31,6 +53,15 @@ ret = trackerFlow.init(frame, bbox)
 object_detector = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=40)
 
 while True:
+
+    # Get Angle
+    if len(pointsList) % 3 == 0 and len(pointsList) != 0:
+        getAngle(pointsList)
+
+    cv2.setMouseCallback('Image', mousePoints)
+
+    
+
     ret, frame = cap.read()
     if not ret:
         break
