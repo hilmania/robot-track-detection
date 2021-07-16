@@ -67,6 +67,9 @@ def getOrientation(pts, img):
 
 def mousePoints (event, x, y, flags, params):
     if event == cv.EVENT_LBUTTONDOWN:
+        size = len(pointsList)
+        if size != 0 and size % 3 != 0:
+            cv.line(img,tuple(pointsList[round((size -1 ) / 3) * 3]), (x, y), (0, 0, 255), 2)
         cv.circle(img, (x, y), 5, (0, 0, 255), cv.FILLED)
         pointsList.append([x, y])
         #print(pointsList)
@@ -84,7 +87,9 @@ def getAngle(pointsList):
     angR = atan((m2 - m1) / (1 + (m2 * m1)))
     angD = round(degrees(angR))
     print(angD)
+    cv.putText(img, str(angD), (pt1[0] - 40, pt1[1] - 20), cv.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
     return angD
+    
 
 def calculateDistance (pointsList):
     pt1, pt2 = pointsList[-2:]
@@ -162,7 +167,7 @@ while True:
     key = cv.waitKey(1) & 0xFF
     if key == ord("r"):
         pointsList = []
-        #img = cv.imread("input_img.jpg")
+        img = cv.imread("input_img.jpg")
     elif key == ord("q"):
         break
 
