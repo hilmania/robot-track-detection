@@ -1,0 +1,35 @@
+import numpy as np
+import cv2
+
+from helper.tracking import *
+
+global point, pressed
+
+# Create the circle
+colour = (0, 0, 255)
+lineWidth = -1  # -1 will result in filled circle
+radius = 30
+point = (0, 0)
+
+# event handler
+cv2.namedWindow("Frame")  # must match the imshow 1st argument
+cv2.setMouseCallback("Frame",  tracking.click)
+
+cap = cv2.VideoCapture(0)
+
+# Loop for video stream
+while (True):
+
+    stream = cv2.waitKey(1)  # Load video every 1ms and to detect user entered key
+
+    # Read from videoCapture stream and display
+    ret, frame = cap.read()
+    cv2.circle(frame, point, radius, colour, lineWidth, cv2.FILLED)  # circle properties as arguments
+    frame = cv2.resize(frame, (0, 0), fx=0.99, fy=0.99)  # this fx,fy value will be explained in post
+    cv2.imshow("Frame", frame)
+
+    if stream & 0XFF == ord('q'):  # If statement to stop loop,Letter 'q' is the escape key
+        break  # get out of loop
+
+cap.release()
+cv2.destroyAllWindows()

@@ -72,9 +72,10 @@ def mousePoints (event, x, y, flags, params):
             cv.line(img,tuple(pointsList[round((size -1 ) / 3) * 3]), (x, y), (0, 0, 255), 2)
         cv.circle(img, (x, y), 5, (0, 0, 255), cv.FILLED)
         pointsList.append([x, y])
-        #print(pointsList)
+        print(pointsList)
         #print(x, y)
     return pointsList
+
 
 def gradient(pt1, pt2):
     return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
