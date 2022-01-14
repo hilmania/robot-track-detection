@@ -257,7 +257,7 @@ while True:
 
         # Latest point in latest trajectory
         for x, y in [np.int32(trajectory[-1]) for trajectory in trajectories]:
-            cv2.circle(mask, (x, y), 5, 0, -1)
+            cv2.circle(mask, (x, y), 3, 0, -1)
 
         # Detect the good features to track
         p = cv2.goodFeaturesToTrack(frame_gray, mask=mask, **feature_params)
