@@ -25,7 +25,9 @@ detect_interval = 5
 trajectories = []
 frame_idx = 0
 
-pointsList = [None] * 3
+pointsList = [(0,0)] * 3
+CM_TO_PIXEL = 32.0 / 640
+
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -41,7 +43,7 @@ def distance(x1, y1, x2, y2):
     Calculate distance between two points
     """
     dist = math.sqrt(math.fabs(x2 - x1) ** 2 + math.fabs(y2 - y1) ** 2)
-    return dist
+    return round(dist * CM_TO_PIXEL, 2)
 
 # function for finding color match
 def find_color1(frame):
@@ -171,6 +173,7 @@ def getOrientation(pts, img):
     label = "  Rotation Angle: " + str(-int(np.rad2deg(angle)) - 90) + " degrees"
     textbox = cv2.rectangle(img, (cntr[0], cntr[1] - 25), (cntr[0] + 250, cntr[1] + 10), (255, 255, 255), -1)
     cv2.putText(img, label, (cntr[0], cntr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(img, "Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
 
     return angle
 
@@ -244,10 +247,14 @@ while True:
 
         # Draw all the trajectories
         cv2.polylines(img, [np.int32(trajectory) for trajectory in trajectories], False, (0, 255, 0))
-        cv2.putText(img, 'track count: %d' % len(trajectories), (20, 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 2)
+        cv2.putText(img, 'track count: %d' % len(trajectories), (20, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
         
         # Draw coordinate
-        cv2.putText(img, str(trajectories[0][0]), (20, 90), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
+        cv2.putText(img, "Coordinate : " + str(trajectories[0][0]), (20, 90), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
+        # print(trajectories[0][0][1])
+        print(pointsList[1])
+        if pointsList is not None:
+            cv2.putText(img, "Distance : " + str( distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]) ) + " cm", (20, 150), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
         # drawAxis(img, pointsList[0], pointsList[1], (255, 255, 0), 1)
 
     # Update interval - When to update and detect new features
