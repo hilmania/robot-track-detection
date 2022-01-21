@@ -1,7 +1,7 @@
 import bluetooth
 import time
 # Detect all Bluetooth devices and Create an array with all the MAC addresses
-print("Searching for devices...")
+# print("Searching for devices...")
 # nearby_
 # Run through all the devices found and list their name
 # num = 0
@@ -22,21 +22,29 @@ passkey = "1234"
 try:
     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     sock.connect((bd_addr, port))
-    data = "L"
-    sock.send(data)
-    time.sleep(3)
-    data = "Z"
-    sock.send(data)
-    data = sock.recv(1024)
-    print(data)
+    print("Connected. Type something...")
+    # data = "L"
+    # sock.send(data)
+    # time.sleep(3)
+    # data = "Z"
+    # sock.send(data)
+    # data = sock.recv(1024)
+    # print(data)
+    while 1:
+        text = input()
+        if text == "quit":
+            break
+        sock.send(bytes(text, 'UTF-8'))
+    sock.close()
+    print("Disconnected!")
 
 except bluetooth.btcommon.BluetoothError as err:
     print(err)
     pass
 
-# Print out appearsto be those of Serial.println and not bluetooth.println
+# Print out appears to be those of Serial.println and not bluetooth.println
 
-sock.getsockname()
-sock.getpeername()
-
-sock.close()
+# sock.getsockname()
+# sock.getpeername()
+#
+# sock.close()
