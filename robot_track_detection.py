@@ -34,7 +34,7 @@ pointsList = [(0,0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
 
-arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
+arduino = serial.Serial(port='/dev/tty.HC-05', baudrate=115200, timeout=.1)
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -311,8 +311,8 @@ def fuzzy_robot(d, a):
     wheel_right.compute()
     wheel_left.compute()
 
-    print("velocity_right_wheel : ", wheel_right.output['velocity'])
-    print("velocity_left_wheel : ", wheel_left.output['velocity'])
+    # print("velocity_right_wheel : ", wheel_right.output['velocity'])
+    # print("velocity_left_wheel : ", wheel_left.output['velocity'])
     # velocity.view(sim=wheel_right)
     # plt.title("Velocity Right Wheel")
     # velocity.view(sim=wheel_left)
@@ -404,7 +404,7 @@ while True:
         # Draw coordinate
         cv2.putText(img, "Coordinate : " + str(trajectories[0][0]), (20, 90), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
         # print(trajectories[0][0][1])
-        print(pointsList[1])
+        # print(pointsList[1])
         # if pointsList is not None:
         cv2.putText(img, "Distance : " + str( distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]) ) + " cm", (20, 150), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
         # drawAxis(img, pointsList[0], pointsList[1], (255, 255, 0), 1)
@@ -436,10 +436,10 @@ while True:
     fps = 1 / (end - start)
 
     velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), global_angle )
-    print(velo)
+    # print(velo)
 
-    VR = write_read(int(round(velo[0],0)))
-    VL = write_read(int(round(velo[1],0)))
+    VR = write_read(str(int(round(velo[0],0))))
+    VL = write_read(str(int(round(velo[1],0))))
     print(VR)
     print(VL)
 
