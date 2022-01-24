@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import serial
 import time
 import math
 from math import atan2, cos, sin, sqrt, pi, atan, degrees
@@ -33,6 +34,7 @@ pointsList = [(0,0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
 
+arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -322,6 +324,11 @@ def fuzzy_robot(d, a):
     vel.append(wheel_left.output['velocity'])
     return vel
 
+def write_read(x):
+    arduino.write(bytes(x, 'utf-8'))
+    time.sleep(0.05)
+    data = arduino.readline()
+    return data
 
 # ======================================================================================================================
 # main section
@@ -430,6 +437,12 @@ while True:
 
     velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), global_angle )
     print(velo)
+
+    VR = write_read(int(round(velo[0],0)))
+    VL = write_read(int(round(velo[1],0)))
+    print(VR)
+    print(VL)
+
     # Show Results
     cv2.putText(img, f"{fps:.2f} FPS", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     cv2.putText(img, "VR : " + str(round(velo[0], 2)) + " PWM", (20, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
