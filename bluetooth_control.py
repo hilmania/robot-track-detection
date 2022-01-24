@@ -1,15 +1,32 @@
+# Arduino Code
+
+# int x;
+
+# void setup() {
+#   Serial.begin(115200);
+#   Serial.setTimeout(1);
+# }
+
+# void loop() {
+#   while (!Serial.available());
+#   x = Serial.readString().toInt();
+#   Serial.print(x + 1);
+# }
+
 import serial
 import time
-print("Starting...")
-port = "/dev/tty.HC-05-DevB"
-bluetooth = serial.Serial(port, 9600)  
-print("Connected!")  
-bluetooth.flushInput()  
-for i in range(5):  
-    print("ping")  
-    bluetooth.Write(b"Boop"+str.encode(str(i)))  
-    input_data = bluetooth.readline()  
-    print(input_data.decode())  
-    time.sleep(0.1)  
-bluetooth.close()  
-print("Done")  
+
+arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
+
+
+def write_read(x):
+    arduino.write(bytes(x, 'utf-8'))
+    time.sleep(0.05)
+    data = arduino.readline()
+    return data
+
+
+while True:
+    num = input("Enter a number: ")
+    value = write_read(num)
+    print(value)

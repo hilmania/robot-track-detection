@@ -17,32 +17,32 @@ def scan():
         print("\n")
 
 
-    bd_addr = "00:18:E4:34:C4:57"
-    port = 1
+    # bd_addr = "00:18:E4:34:C4:57"
+    # port = 1
 
-    status = subprocess.call("bluetooth-agent " + passkey + " &", shell=True)
+    # status = subprocess.call("bluetooth-agent " + passkey + " &", shell=True)
 
-    try:
-        sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        sock.connect((bd_addr, port))
-    except bluetooth.btcommon.BluetoothError as err:
-        # Error handler
-        pass
+    # try:
+    #     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    #     sock.connect((bd_addr, port))
+    # except bluetooth.btcommon.BluetoothError as err:
+    #     # Error handler
+    #     pass
 
-    # sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    # sock.connect((bd_addr, port))
+    # # sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    # # sock.connect((bd_addr, port))
 
-    print("Connected")
-    sock.settimeout(1.0)
-    sock.send("x")
-    print("Sent data")
+    # print("Connected")
+    # sock.settimeout(1.0)
+    # sock.send("x")
+    # print("Sent data")
 
-    data = sock.recv(1)
-    print("received [%s]" % data)
+    # data = sock.recv(1)
+    # print("received [%s]" % data)
 
-    sock.close()
-    # sock.send("hello!!")
-    #
     # sock.close()
-    return
+    # # sock.send("hello!!")
+    # #
+    # # sock.close()
+    # return
 scan()
