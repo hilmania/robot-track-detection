@@ -34,7 +34,7 @@ pointsList = [(0,0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
 
-arduino = serial.Serial(port='/dev/tty.HC-05', baudrate=115200, timeout=.1)
+arduino = serial.Serial(port='COM10', baudrate=115200, timeout=.1)
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -325,7 +325,7 @@ def fuzzy_robot(d, a):
     return vel
 
 def write_read(x):
-    arduino.write(bytes(x, 'utf-8'))
+    arduino.write(bytes([int(x)]))
     time.sleep(0.05)
     data = arduino.readline()
     return data
