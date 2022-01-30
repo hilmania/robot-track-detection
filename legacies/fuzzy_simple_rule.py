@@ -72,10 +72,10 @@ wheel_right = ctrl.ControlSystemSimulation(robot_ctrl_right)
 wheel_left = ctrl.ControlSystemSimulation(robot_ctrl_left)
 
 wheel_right.input['distance'] = 60
-wheel_right.input['angle'] = 25
+wheel_right.input['angle'] = -75
 
 wheel_left.input['distance'] = 60
-wheel_left.input['angle'] = 25
+wheel_left.input['angle'] = -75
 
 wheel_right.compute()
 wheel_left.compute()

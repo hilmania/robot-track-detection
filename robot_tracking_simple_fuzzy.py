@@ -112,9 +112,12 @@ def getOrientation(pts, img):
     cv2.putText(img, "Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
 
     global_angle = angle
+    global sudut
+    sudut = -int(np.rad2deg(angle)) - 90
     return angle
 
 def fuzzy_robot(d, a):
+    vel = []
     distance = ctrl.Antecedent(np.arange(0, 150, 1), 'distance')
     uni_angle = np.array([-180, -30, 0, 30, 180])
     angle = ctrl.Antecedent(uni_angle, 'angle')
@@ -182,9 +185,9 @@ def fuzzy_robot(d, a):
     wheel_right.compute()
     wheel_left.compute()
 
-    vel = []
-    vel.append(int(wheel_right.output['velocity']))
-    vel.append(int(wheel_left.output['velocity']))
+
+    vel.append(wheel_right.output['velocity'])
+    vel.append(wheel_left.output['velocity'])
     return vel
 
 # def write_read(x):
@@ -291,7 +294,7 @@ while True:
     # calculate the FPS for current frame detection
     fps = 1 / (end - start)
 
-    velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), global_angle )
+    velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), sudut)
 
     # Kirim perintah ke Serial Bluetooth
     # VR = write_read(str(int(round(velo[0],0))))

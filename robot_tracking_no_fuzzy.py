@@ -34,6 +34,7 @@ pointsList = [(0,0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
 
+
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
     global point, pressed
@@ -48,7 +49,7 @@ def distance(x1, y1, x2, y2):
     Calculate distance between two points
     """
     dist = math.sqrt(math.fabs(x2 - x1) ** 2 + math.fabs(y2 - y1) ** 2)
-    return round(dist * CM_TO_PIXEL, 2)
+    return int(dist * CM_TO_PIXEL)
 
 def drawAxis(img, p_, q_, color, scale):
     p = list(p_)
@@ -111,7 +112,8 @@ def getOrientation(pts, img):
     cv2.putText(img, label, (cntr[0], cntr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
     cv2.putText(img, "Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
 
-    global_angle = angle
+    global sudut
+    sudut = -int(np.rad2deg(angle)) - 90
     return angle
 
 def fuzzy_robot(d, a):
@@ -241,8 +243,11 @@ while True:
     # calculate the FPS for current frame detection
     fps = 1 / (end - start)
 
-    velo = fuzzy_robot(int(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1])), global_angle )
-
+    d = distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1])
+    print(d)
+    print(sudut)
+    velo = fuzzy_robot(d, sudut)
+    print(velo)
     # Kirim perintah ke Serial Bluetooth
     # VR = write_read(str(int(round(velo[0],0))))
     # VL = write_read(str(int(round(velo[1],0))))

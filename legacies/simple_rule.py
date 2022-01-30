@@ -22,5 +22,5 @@ def fuzzy_robot(d, a):
     return vel
 
 
-hasil_VR = fuzzy_robot(60, -30)
+hasil_VR = fuzzy_robot(60, 134)
 print(hasil_VR)
