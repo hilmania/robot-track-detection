@@ -59,11 +59,12 @@ def getOrientation(pts, img):
     ## [visualization]
 
     # Label with the rotation angle
-    label = "  Rotation Angle: " + str(-int(np.rad2deg(angle)) - 90) + " degrees"
-    textbox = cv.rectangle(img, (cntr[0], cntr[1] - 25), (cntr[0] + 250, cntr[1] + 10), (255, 255, 255), -1)
+    label = "Angle : " + str(-int(np.rad2deg(angle)))
+
+    textbox = cv.rectangle(img, (cntr[0], cntr[1] - 25), (cntr[0] + 100, cntr[1] + 10), (255, 255, 255), -1)
     cv.putText(img, label, (cntr[0], cntr[1]), cv.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv.LINE_AA)
 
-    return angle
+    return np.rad2deg(angle)
 
 def mousePoints (event, x, y, flags, params):
     if event == cv.EVENT_LBUTTONDOWN:
@@ -123,7 +124,7 @@ for i, c in enumerate(contours):
     area = cv.contourArea(c)
 
     # Ignore contours that are too small or too large
-    if area < 3700 or 100000 < area:
+    if area < 1700 or 100000 < area:
         continue
 
     # Draw each contour only for visualisation purposes
@@ -132,28 +133,28 @@ for i, c in enumerate(contours):
     # === Calculate orientation between 0 and 180 ===
     # cv.minAreaRect returns:
     # (center(x, y), (width, height), angle of rotation) = cv2.minAreaRect(c)
-    rect = cv.minAreaRect(c)
-    box = cv.boxPoints(rect)
-    box = np.int0(box)
-    
-    # Retrieve the key parameters of the rotated bounding box
-    center = (int(rect[0][0]), int(rect[0][1]))
-    width = int(rect[1][0])
-    height = int(rect[1][1])
-    angle = int(rect[2])
-    
-    if width < height:
-        angle = 90 - angle
-    else:
-        angle = -angle
-    
-    label = "  Rotation Angle: " + str(angle) + " degrees"
-    textbox = cv.rectangle(img, (center[0] - 35, center[1] - 25),
-                           (center[0] + 295, center[1] + 10), (255, 255, 255), -1)
-    cv.putText(img, label, (center[0] - 50, center[1]),
-               cv.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv.LINE_AA)
-    cv.drawContours(img, [box], 0, (0, 0, 255), 2)
-
+    # rect = cv.minAreaRect(c)
+    # box = cv.boxPoints(rect)
+    # box = np.int0(box)
+    #
+    # # Retrieve the key parameters of the rotated bounding box
+    # center = (int(rect[0][0]), int(rect[0][1]))
+    # width = int(rect[1][0])
+    # height = int(rect[1][1])
+    # angle = int(rect[2])
+    #
+    # if width < height:
+    #     angle = 90 - angle
+    # else:
+    #     angle = -angle
+    #
+    # label = " Angle: " + str(angle) + " degrees"
+    # textbox = cv.rectangle(img, (center[0] - 35, center[1] - 25),
+    #                        (center[0] + 295, center[1] + 10), (255, 255, 255), -1)
+    # cv.putText(img, label, (center[0] - 50, center[1]),
+    #            cv.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv.LINE_AA)
+    # cv.drawContours(img, [box], 0, (0, 0, 255), 2)
+    cv.drawContours(img, contours, i, (0, 0, 255), 2)
     # Find the orientation of each shape
     getOrientation(c, img)
 

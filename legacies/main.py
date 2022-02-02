@@ -103,11 +103,11 @@ def calculateDistance (pointsList):
     return dist
 
 # Define Tracker Optical Flow
-tracker = cv.legacy.TrackerMedianFlow_create()
+tracker = cv.TrackerMedianFlow_create()
 
 initBB = None
 
-cap = cv.VideoCapture("videos/dataset-1.mp4")
+cap = cv.VideoCapture("../videos/dataset-1.mp4")
 
 fps = None
 

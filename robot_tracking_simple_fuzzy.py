@@ -30,9 +30,25 @@ detect_interval = 5
 trajectories = []
 frame_idx = 0
 
-pointsList = [(0,0)] * 3
+pointsList = [(0, 0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
+sudut = 0
+
+
+def gradient(pt1, pt2):
+    return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
+
+
+def get_angle(pointsList):
+    pt1, pt2, pt3 = pointsList[-3:]
+    m1 = gradient(pt1, pt2)
+    m2 = gradient(pt1, pt3)
+    sudut_radian = atan((m2 - m1) / (1 + (m2 * m1)))
+    sudut_derajat = round(degrees(sudut_radian))
+
+    # cv2.putText(img, str(sudut_derajat), (pt1[0] - 40, pt1[1] - 20), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+    return -sudut_derajat
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -41,6 +57,7 @@ def point_click(event, x, y, flags, param):
         print("Pressed", x, y)
         point = (x, y)
         pointsList[1] = point
+
 
 # function for calculate distance
 def distance(x1, y1, x2, y2):
@@ -99,8 +116,8 @@ def getOrientation(pts, img):
     cntr[0] - 0.02 * eigenvectors[1, 0] * eigenvalues[1, 0], cntr[1] - 0.02 * eigenvectors[1, 1] * eigenvalues[1, 0])
     #print(p2)
 
-    drawAxis(img, cntr, p1, (255, 255, 0), 9)
-    # drawAxis(img, cntr, pointsList[1], (0, 0, 255), 5)
+    drawAxis(img, cntr, p1, (255, 255, 0), 7)
+    drawAxis(img, cntr, p2, (0, 0, 255), 7)
     cv2.line(img, cntr, pointsList[1], (0, 0, 255), 3, cv2.LINE_AA)
 
     angle = atan2(eigenvectors[0, 1], eigenvectors[0, 0])  # orientation in radians
@@ -109,11 +126,20 @@ def getOrientation(pts, img):
     label = "  Rotation Angle: " + str(-int(np.rad2deg(angle)) - 90) + " degrees"
     textbox = cv2.rectangle(img, (cntr[0], cntr[1] - 25), (cntr[0] + 250, cntr[1] + 10), (255, 255, 255), -1)
     cv2.putText(img, label, (cntr[0], cntr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(img, "Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
+    cv2.putText(img, "Rotation Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
 
     global_angle = angle
-    global sudut
-    sudut = -int(np.rad2deg(angle)) - 90
+    # global sudut
+    # sudut = -int(np.rad2deg(angle)) - 90
+
+    points_array = []
+    points_array.append(cntr)
+    points_array.append(pointsList[1])
+    points_array.append(p1)
+    sudut_robot = get_angle(points_array)
+    print(sudut_robot)
+    cv2.putText(img, "Angle : " + str(sudut_robot) + " degree", (20, 240),
+                cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
     return angle
 
 def fuzzy_robot(d, a):
@@ -123,6 +149,7 @@ def fuzzy_robot(d, a):
     angle = ctrl.Antecedent(uni_angle, 'angle')
 
     uni_velocity = np.array([0, 55, 100, 175, 255])
+
     velocity = ctrl.Consequent(uni_velocity, 'velocity')
 
     distance['dekat'] = fuzz.trapmf(distance.universe, [0, 0, 5, 15])
@@ -234,7 +261,7 @@ while True:
 
         # Draw each contour only for visualisation purposes
         cv2.drawContours(frame, contours, i, (0, 0, 255), 2)
-        getOrientation(c, frame)
+        sudut = getOrientation(c, frame)
 
     img = frame.copy()
 
@@ -295,6 +322,8 @@ while True:
     fps = 1 / (end - start)
 
     velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), sudut)
+    # time.sleep(.2)
+    prev_velo = velo
 
     # Kirim perintah ke Serial Bluetooth
     # VR = write_read(str(int(round(velo[0],0))))
@@ -302,14 +331,9 @@ while True:
 
     # Show Results
     cv2.putText(img, f"{fps:.2f} FPS", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.putText(img, "VR : " + str(round(velo[0], 2)) + " PWM", (20, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    cv2.putText(img, "VR : " + str(round(velo[0], 2)) + " PWM", (20, 180), cv2.FONT_HERSHEY_SIMPLEX,
+                1, (0, 255, 0), 2)
     cv2.putText(img, "VL : " + str(round(velo[1], 2)) + " PWM", (20, 210), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
-    cv2.imshow('Optical Flow', img)
-    # cv2.imshow('Mask', mask)
-
-    if cv2.waitKey(10) & 0xFF == ord('q'):
-        break
 
 cap.release()
 cv2.destroyAllWindows()
