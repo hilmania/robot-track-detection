@@ -37,7 +37,10 @@ sudut = 0
 
 
 def gradient(pt1, pt2):
-    return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
+    if (pt2[0] - pt1[0]) == 0:
+        return 0
+    else:
+        return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
 
 
 def get_angle(pointsList):

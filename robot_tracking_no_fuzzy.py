@@ -33,7 +33,24 @@ frame_idx = 0
 pointsList = [(0,0)] * 3
 global_angle = 0
 CM_TO_PIXEL = 32.0 / 640
+sudut = 0
 
+def gradient(pt1, pt2):
+    if (pt2[0] - pt1[0]) == 0:
+        return 0
+    else:
+        return (pt2[1] - pt1[1]) / (pt2[0] - pt1[0])
+
+
+def get_angle(pointsList):
+    pt1, pt2, pt3 = pointsList[-3:]
+    m1 = gradient(pt1, pt2)
+    m2 = gradient(pt1, pt3)
+    sudut_radian = atan((m2 - m1) / (1 + (m2 * m1)))
+    sudut_derajat = round(degrees(sudut_radian))
+
+    # cv2.putText(img, str(sudut_derajat), (pt1[0] - 40, pt1[1] - 20), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+    return sudut_derajat
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -101,7 +118,7 @@ def getOrientation(pts, img):
     #print(p2)
 
     drawAxis(img, cntr, p1, (255, 255, 0), 9)
-    # drawAxis(img, cntr, pointsList[1], (0, 0, 255), 5)
+    drawAxis(img, cntr, p2, (0, 0, 255), 7)
     cv2.line(img, cntr, pointsList[1], (0, 0, 255), 3, cv2.LINE_AA)
 
     angle = atan2(eigenvectors[0, 1], eigenvectors[0, 0])  # orientation in radians
@@ -112,9 +129,15 @@ def getOrientation(pts, img):
     cv2.putText(img, label, (cntr[0], cntr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
     cv2.putText(img, "Angle : " + str(-int(np.rad2deg(angle)) - 90) + " degree", (20, 120), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2 )
 
-    global sudut
-    sudut = -int(np.rad2deg(angle)) - 90
-    return angle
+    points_array = []
+    points_array.append(cntr)
+    points_array.append(pointsList[1])
+    points_array.append(p1)
+    sudut_robot = get_angle(points_array)
+    print(sudut_robot)
+    cv2.putText(img, "Angle : " + str(sudut_robot) + " degree", (20, 240),
+                cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    return sudut_robot
 
 def fuzzy_robot(d, a):
     if d > 5:
@@ -183,7 +206,7 @@ while True:
 
         # Draw each contour only for visualisation purposes
         cv2.drawContours(frame, contours, i, (0, 0, 255), 2)
-        getOrientation(c, frame)
+        sudut = getOrientation(c, frame)
 
     img = frame.copy()
 
