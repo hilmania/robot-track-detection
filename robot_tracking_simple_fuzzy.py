@@ -140,7 +140,7 @@ def getOrientation(pts, img):
     print(sudut_robot)
     cv2.putText(img, "Angle : " + str(sudut_robot) + " degree", (20, 240),
                 cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
-    return angle
+    return sudut_robot
 
 def fuzzy_robot(d, a):
     vel = []
@@ -322,8 +322,8 @@ while True:
     fps = 1 / (end - start)
 
     velo = fuzzy_robot(distance(pointsList[1][0], pointsList[1][1], trajectories[0][0][0], trajectories[0][0][1]), sudut)
-    # time.sleep(.2)
-    prev_velo = velo
+    time.sleep(.1)
+    # prev_velo = velo
 
     # Kirim perintah ke Serial Bluetooth
     # VR = write_read(str(int(round(velo[0],0))))
@@ -334,6 +334,12 @@ while True:
     cv2.putText(img, "VR : " + str(round(velo[0], 2)) + " PWM", (20, 180), cv2.FONT_HERSHEY_SIMPLEX,
                 1, (0, 255, 0), 2)
     cv2.putText(img, "VL : " + str(round(velo[1], 2)) + " PWM", (20, 210), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+    cv2.imshow('Optical Flow', img)
+    # cv2.imshow('Mask', mask)
+
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
 
 cap.release()
 cv2.destroyAllWindows()
