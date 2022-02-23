@@ -49,9 +49,10 @@ def get_angle(pointsList):
     m2 = gradient(pt1, pt3)
     sudut_radian = atan((m2 - m1) / (1 + (m2 * m1)))
     sudut_derajat = round(degrees(sudut_radian))
-
+    if sudut_derajat < 0:
+        sudut_derajat = 180 + sudut_derajat
     # cv2.putText(img, str(sudut_derajat), (pt1[0] - 40, pt1[1] - 20), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
-    return -sudut_derajat
+    return sudut_derajat
 
 # function for detecting left mouse click
 def point_click(event, x, y, flags, param):
@@ -143,7 +144,7 @@ def getOrientation(pts, img):
     print(sudut_robot)
     cv2.putText(img, "Angle : " + str(sudut_robot) + " degree", (20, 240),
                 cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
-    return sudut_robot
+    return -(sudut_robot % 360)
 
 def fuzzy_robot(d, a):
     vel = []
