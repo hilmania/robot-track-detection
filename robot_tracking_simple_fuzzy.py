@@ -65,9 +65,6 @@ def point_click(event, x, y, flags, param):
 
 # function for calculate distance
 def distance(x1, y1, x2, y2):
-    """
-    Calculate distance between two points
-    """
     dist = math.sqrt(math.fabs(x2 - x1) ** 2 + math.fabs(y2 - y1) ** 2)
     return round(dist * CM_TO_PIXEL, 2)
 

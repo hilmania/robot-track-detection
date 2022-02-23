@@ -34,7 +34,10 @@ def findangle():
 
 
 def slope(p1, p2):
-    return (p2[1] - p1[1]) / (p2[0] - p1[0])
+    # if (p2[0] - p1[0]) == 0:
+    #     return 0
+    # else:
+        return (p2[1] - p1[1]) / (p2[0] - p1[0])
 
 
 img = cv2.imread("protractor.jpg")
